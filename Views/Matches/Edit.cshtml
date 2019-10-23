@@ -11,54 +11,72 @@
 {
     @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
-        <h4>Match</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.Id)
+<div class="form-horizontal">
+    <h4>Match</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.Id)
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.HomeTeamId, "HomeTeamId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <select class="form-control" id="homeTeam" name="HomeTeamId">
-                    <option value="@Model.HomeTeamId"> @Model.HomeTeam.Name </option>
-                </select>
-                @Html.ValidationMessageFor(model => model.HomeTeamId, "", new { @class = "text-danger" })
-            </div>
+    <div class="form-group">
+        <div class="control-label col-md-2">
+            Home Team
         </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.AwayTeamId, "AwayTeamId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <select class="form-control" id="awayTeam" name="AwayTeamId">
-                    <option value="@Model.AwayTeamId"> @Model.AwayTeam.Name </option>
-                </select>
-                @Html.ValidationMessageFor(model => model.AwayTeamId, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.HomeGoals, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.HomeGoals, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.HomeGoals, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.AwayGoals, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.AwayGoals, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.AwayGoals, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
+        <div class="col-md-10">
+            <select class="form-control" id="homeTeam" name="HomeTeamId">
+                
+            </select>
+            @Html.ValidationMessageFor(model => model.HomeTeamId, "", new { @class = "text-danger" })
         </div>
     </div>
+
+    <div class="form-group">
+        <div class="control-label col-md-2">
+            Away Team
+        </div>
+        <div class="col-md-10">
+            <select class="form-control" id="awayTeam" name="AwayTeamId">
+                <option value="@Model.AwayTeamId"> @Model.AwayTeam.Name </option>
+            </select>
+            @Html.ValidationMessageFor(model => model.AwayTeamId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="control-label col-md-2">
+            Home goals
+        </div>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.HomeGoals, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.HomeGoals, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="control-label col-md-2">
+            Away goals
+        </div>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.AwayGoals, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.AwayGoals, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="control-label col-md-2">
+            Is Match Over
+        </div>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.IsOver, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.IsOver, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Save" class="btn btn-default" />
+        </div>
+    </div>
+</div>
 }
 
 <div>
@@ -71,7 +89,6 @@
     <script>
 
     $(document).ready(function () {
-        //$('#awayTeam').prop('disabled', true);
         LoadTeams('home');
         LoadTeams('away');
 
@@ -79,20 +96,15 @@
             var optionSelected = $("option:selected", this);
             $('#awayTeam').prop('disabled', false);
             var id = this.value;
-            $('#awayTeam').empty();
+            //$('#homeTeam').empty()
             LoadTeams('away', id)
-        });
 
-        $('#awayTeam').on('change', function (e) {
-            var optionSelected = $("option:selected", this);
-            var id = this.value;
-            $('#homeTeam').empty()
-            LoadTeams('home', id)
         });
     });
 
 
         function LoadTeams(team, id) {
+        team == 'home' ? $('#homeTeam').empty() : $('#awayTeam').empty();
         $.ajax({
             type: 'GET',
             url: '@Url.Action("GetTeams")',
@@ -107,8 +119,9 @@
                      } else {
                          $('#awayTeam').append(options);
                      }
-
-                 });
+                });
+                $('#homeTeam option[value=' +@Model.HomeTeamId+']').attr('selected', 'selected');
+                $('#awayTeam option[value='+@Model.AwayTeamId+']').attr('selected', 'selected');
             },
              error: function (ex) {
                  alert('Something went wrong :(');

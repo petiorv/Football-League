@@ -39,7 +39,7 @@ namespace FootballLeague.Data.Repositories
             return db.Matches
                 .Include(m => m.HomeTeam)
                 .Include(m => m.AwayTeam)
-                .Where(m => m.AwayTeamId == teamId || m.HomeTeamId == teamId);
+                .Where(m => m.IsOver && m.HomeTeamId == teamId || m.AwayTeamId == teamId);
         }
     }
 }

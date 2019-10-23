@@ -19,13 +19,11 @@ namespace FootballLeague.Controllers
         }
         public ActionResult Index()
         {
-            var teams = this._matchesService.GetTeams();
-            var matches = this._matchesService.GetCurrentTeamMatches(3);
+            var teams = this._matchesService.GetTeams().OrderByDescending(t => t.Points);
 
             RankingAndMatches rankingAndMatches = new RankingAndMatches();
 
             rankingAndMatches.TeamsRanking = teams.ToList();
-            rankingAndMatches.TeamsPlayedMatches = matches.ToList();
             
             return View(rankingAndMatches);
         }

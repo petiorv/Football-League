@@ -37,10 +37,6 @@ namespace FootballLeague.Controllers
 
         public ActionResult Create()
         {
-
-            var teams = this._matchesService.GetTeams();
-            ViewBag.AwayTeamId = new SelectList(teams, "Id", "Name");
-            ViewBag.HomeTeamId = new SelectList(teams, "Id", "Name");
             return View();
         }
 
@@ -48,32 +44,26 @@ namespace FootballLeague.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,HomeTeamId,AwayTeamId,HomeGoals,AwayGoals,IsOver")] Match match)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && match.AwayGoals > -1 && match.HomeGoals > -1)
             {
                 this._matchesRepository.Insert(match);
                 if (match.IsOver)
                 {
                     this._matchesService.UpdatePoints(match);
-                }                
+                }
                 return RedirectToAction("Index");
             }
-            var teams = this._matchesService.GetTeams();
-            ViewBag.AwayTeamId = new SelectList(teams, "Id", "Name", match.AwayTeamId);
-            ViewBag.HomeTeamId = new SelectList(teams, "Id", "Name", match.HomeTeamId);
-                        
+
             return View(match);
         }
-        
+
         public ActionResult Edit(int id)
-        {            
+        {
             var match = this._matchesRepository.GetById(id);
             if (match == null)
             {
                 return HttpNotFound();
             }
-            var teams = this._matchesService.GetTeams();
-            ViewBag.AwayTeamId = new SelectList(teams, "Id", "Name", match.AwayTeamId);
-            ViewBag.HomeTeamId = new SelectList(teams, "Id", "Name", match.HomeTeamId);
             return View(match);
         }
 
@@ -81,15 +71,15 @@ namespace FootballLeague.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,HomeTeamId,AwayTeamId,HomeGoals,AwayGoals,IsOver")] Match match)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && match.AwayGoals > -1 && match.HomeGoals > -1)
             {
                 this._matchesRepository.Update(match);
-                this._matchesService.UpdatePoints(match);
+                if (match.IsOver)
+                {
+                    this._matchesService.UpdatePoints(match);
+                }
                 return RedirectToAction("Index");
             }
-            var teams = this._matchesService.GetTeams();
-            ViewBag.AwayTeamId = new SelectList(teams, "Id", "Name", match.AwayTeamId);
-            ViewBag.HomeTeamId = new SelectList(teams, "Id", "Name", match.HomeTeamId);
             return View(match);
         }
 
@@ -113,7 +103,7 @@ namespace FootballLeague.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetTeams ()
+        public JsonResult GetTeams()
         {
             var teams = this._matchesService.GetTeams();
             return Json(teams, JsonRequestBehavior.AllowGet);

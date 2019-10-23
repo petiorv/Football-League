@@ -31,7 +31,7 @@ namespace FootballLeague.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,Name,Points")] Team team)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && team.Points > -1)
             {
                 team.CreatedTime = DateTime.Now;
                 this._teamsrepository.Insert(team);
@@ -55,7 +55,7 @@ namespace FootballLeague.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Name,Points")] Team team)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && team.Points > -1)
             {
                 this._teamsrepository.Update(team);
                 return RedirectToAction("Index");
