@@ -1,0 +1,83 @@
+﻿@using FootballLeague.Models
+@model RankingAndMatches
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <h2>Team Ranking</h2>
+        <table class="table">
+            <tr>
+                <th>
+                    Club
+                </th>
+                <th>
+                    Points
+                </th>
+            </tr>
+            @if (Model.TeamsRanking.Count > 0)
+            {
+                foreach (var item in Model.TeamsRanking)
+                {
+                    <tr>
+                        <td onclick="LoadMatches(@item.Id)">
+                            @Html.DisplayFor(modelItem => item.Name, "value=id")
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Points)
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+    <div class="col-md-6">        
+        <h2>Team Played matches</h2>
+        <h4>To check all played matches of current team, press the name from ranking list.</h4>
+        <table id="playedMatches" class="table">
+            <tr>
+                <th>
+                    Home
+                </th>
+                <th>
+                    Goals
+                </th>
+                <th>
+                    Goals
+                </th>
+                <th>
+                    Away
+                </th>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<script>
+    function LoadMatches(id) {
+        $('#playedMatches').empty();
+        $('#playedMatches')
+         $.ajax({  
+            type: 'POST',  
+            url: '@Url.Action("GetTeamMatches")',  
+            dataType: 'json',  
+             data: { id: id },  
+             success: function (data) {  
+                $.each(data, function (i, item) {  
+                    var rows = "<tr>"  
+                        + "<td class='prtoducttd'>" + item.HomeTeam.Name + "</td>"
+                        + "<td class='prtoducttd'>" + item.HomeGoals + "</td>"   
+                        + "<td class='prtoducttd'>" + item.AwayGoals + "</td>"  
+                        + "<td class='prtoducttd'>" + item.AwayTeam.Name + "</td>"  
+                    + "</tr>";  
+                    $('#playedMatches').append(rows);  
+                });  
+            },  
+             error: function (ex) {
+                 alert('Something went wrong :(')
+            }  
+        });  
+    }
+</script>

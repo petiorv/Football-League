@@ -1,0 +1,54 @@
+﻿@using FootballLeague.Models
+@model IEnumerable<Match>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Played Matches</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    @*<tr>
+
+            <th>
+                @Html.DisplayNameFor(model => model.HomeTeam.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HomeGoals)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AwayGoals)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AwayTeam.Name)
+            </th>
+
+            <th></th>
+        </tr>*@
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.HomeTeam.Name)
+
+                @Html.DisplayFor(modelItem => item.HomeGoals)
+
+                :
+
+                @Html.DisplayFor(modelItem => item.AwayGoals)
+
+                @Html.DisplayFor(modelItem => item.AwayTeam.Name)
+            </td>
+
+
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
+
+</table>

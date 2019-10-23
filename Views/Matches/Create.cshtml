@@ -1,0 +1,124 @@
+﻿@model FootballLeague.Models.Match
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Match</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.HomeTeamId, "HomeTeamId", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="homeTeam" name="HomeTeamId">
+                    <option></option>
+                </select>
+                @Html.ValidationMessageFor(model => model.HomeTeamId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AwayTeamId, "AwayTeamId", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="awayTeam" name="AwayTeamId">
+                    <option></option>
+                </select>
+                @Html.ValidationMessageFor(model => model.AwayTeamId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.HomeGoals, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.HomeGoals, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.HomeGoals, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AwayGoals, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.AwayGoals, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.AwayGoals, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IsOver, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.IsOver, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.IsOver, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+
+    $(document).ready(function () {
+        $('#awayTeam').prop('disabled', true);
+        LoadTeams('home');
+
+        $('#homeTeam').on('change', function (e) {
+            var optionSelected = $("option:selected", this);
+            $('#awayTeam').prop('disabled', false);
+            var id = this.value;
+            LoadTeams('away', id)
+        });
+
+        $('#awayTeam').on('change', function (e) {
+            var optionSelected = $("option:selected", this);           
+            var id = this.value;
+            LoadTeams('home', id)
+        });
+    });
+
+
+        function LoadTeams(team, id) {
+            team == 'home' ? $('#homeTeam').empty() : $('#awayTeam').empty();
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("GetTeams")',
+            dataType: 'json',
+            success: function (data) {                
+                $.each(data, function (i, item) {
+                    if (id != item.Id) {
+                        var options = `<option value='${item.Id}'>${item.Name}</option>`
+                    }                     
+                     if (team === 'home') {
+                         $('#homeTeam').append(options);
+                     } else {
+                         $('#awayTeam').append(options);
+                     }
+                    
+                 });
+            },
+             error: function (ex) {
+                 alert('Something went wrong :(');
+            }
+        });
+    }
+    </script>
+}
+
