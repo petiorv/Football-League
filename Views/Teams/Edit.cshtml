@@ -10,7 +10,7 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>Team</h4>
         <hr />
@@ -28,7 +28,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Points, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Points, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.Points, new { htmlAttributes = new { @class = "form-control", @id = "Points" } })
                 @Html.ValidationMessageFor(model => model.Points, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -47,4 +47,13 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+            $('#Points').on('input', function () {
+                if ($('#Points').val() < 0) {
+                    $('#Points').val(0)
+                }
+            });
+        })
+    </script>
 }

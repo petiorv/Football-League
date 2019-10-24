@@ -44,7 +44,7 @@
                 Home goals
             </div>
             <div class="col-md-10">
-                @Html.EditorFor(model => model.HomeGoals, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.HomeGoals, new { htmlAttributes = new { @class = "form-control", @id = "HomeGoal" } })
                 @Html.ValidationMessageFor(model => model.HomeGoals, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -54,7 +54,7 @@
                 Away goals
             </div>
             <div class="col-md-10">
-                @Html.EditorFor(model => model.AwayGoals, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.AwayGoals, new { htmlAttributes = new { @class = "form-control", @id = "AwayGoal" } })
                 @Html.ValidationMessageFor(model => model.AwayGoals, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -86,7 +86,20 @@
     @Scripts.Render("~/bundles/jqueryval")
     <script>
 
-    $(document).ready(function () {
+        $(document).ready(function () {
+
+        $('#HomeGoal').on('input', function () {
+            if ($('#HomeGoal').val() < 0) {
+                $('#HomeGoal').val(0)
+            }
+        });
+
+        $('#AwayGoal').on('input', function () {
+            if ($('#AwayGoal').val() < 0) {
+                $('#AwayGoal').val(0)
+            }
+        });
+
         $('#awayTeam').prop('disabled', true);
         LoadTeams('home');
 
